@@ -1,26 +1,36 @@
 {
   "name": "clean-node-api",
   "version": "1.0.0",
-  "main": "index.js",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
+    "@commitlint/cli": "^19.8.1",
+    "@commitlint/config-conventional": "^19.8.1",
+    "@eslint/js": "^9.39.1",
+    "@types/jest": "^30.0.0",
     "@types/node": "^24.10.1",
-    "@typescript-eslint/eslint-plugin": "^2.34.0",
-    "eslint": "^6.8.0",
-    "eslint-config-standard-with-typescript": "^43.0.1",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-node": "^9.2.0",
-    "eslint-plugin-promise": "^4.3.1",
-    "eslint-plugin-standard": "^4.1.0",
+    "@typescript-eslint/eslint-plugin": "^8.48.1",
+    "@typescript-eslint/parser": "^8.48.1",
+    "eslint": "^9.39.1",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-prettier": "^5.5.4",
     "git-commit-msg-linter": "^5.0.8",
+    "globals": "^16.5.0",
     "husky": "^9.1.7",
+    "jest": "^30.2.0",
+    "jiti": "^2.6.1",
     "lint-staged": "^16.2.7",
-    "typescript": "^5.9.3"
+    "prettier": "^3.7.4",
+    "ts-jest": "^29.4.6",
+    "typescript": "^5.9.3",
+    "typescript-eslint": "^8.48.1",
+    "eslint-plugin-unused-imports": "^4.3.0"
   }
 }
