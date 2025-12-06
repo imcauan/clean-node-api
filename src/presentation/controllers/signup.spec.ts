@@ -17,5 +17,6 @@ describe('SignUp Controller', () => {
 
     // Assert
     expect(httpResponse.statusCode).toBe(400);
+    expect(httpResponse.body).toEqual(new Error('Missing param: name'));
   });
 });
