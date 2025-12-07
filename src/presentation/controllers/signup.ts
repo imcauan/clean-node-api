@@ -1,6 +1,6 @@
 import { MissingParamError } from '../errors/missing-param-error';
 import { HttpRequest, HttpResponse } from '../protocols/http';
-import { BadRequest, serverError } from '../helper/http-helper';
+import { badRequest, serverError } from '../helper/http-helper';
 import { Controller } from '../protocols/controller';
 import { EmailValidator } from '../protocols/email-validator';
 import { InvalidParamError } from '../errors/invalid-param-error';
@@ -23,16 +23,16 @@ export class SignUpController implements Controller {
 
       for (const field of requiredFields) {
         if (!httpRequest.body[field]) {
-          return BadRequest(new MissingParamError(field));
+          return badRequest(new MissingParamError(field));
         }
       }
 
       if (httpRequest.body.password !== httpRequest.body.passwordConfirmation) {
-        return BadRequest(new InvalidParamError('passwordConfirmation'));
+        return badRequest(new InvalidParamError('passwordConfirmation'));
       }
 
       if (!this.emailValidator.isValid(httpRequest.body.email)) {
-        return BadRequest(new InvalidParamError('email'));
+        return badRequest(new InvalidParamError('email'));
       }
     } catch (error) {
       return serverError();
