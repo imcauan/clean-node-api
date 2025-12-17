@@ -1,8 +1,36 @@
 import { LogErrorRepository } from '../../data/protocols/log-error-repository';
+import { AccountModel } from '../../domain/models/account';
 import { serverError } from '../../presentation/helper/http-helper';
 import { Controller } from '../../presentation/protocols/controller';
-import { HttpResponse } from '../../presentation/protocols/http';
+import { HttpRequest, HttpResponse } from '../../presentation/protocols/http';
 import { LogControllerDecorator } from './log';
+import { ok } from '../../presentation/helper/http-helper';
+
+function makeFakeServerError(): HttpResponse {
+  const fakeError = new Error();
+  fakeError.stack = 'any_stack';
+  return serverError(fakeError);
+}
+
+function makeFakeAccount(): AccountModel {
+  return {
+    id: 'valid_id',
+    name: 'valid_name',
+    email: 'valid_email@mail.com',
+    password: 'valid_password',
+  };
+}
+
+function makeFakeRequest(): HttpRequest {
+  return {
+    body: {
+      name: 'any_name',
+      email: 'any_email@mail.com',
+      password: 'any_password',
+      passwordConfirmation: 'any_password',
+    },
+  };
+}
 
 function makeLogErrorRepository(): LogErrorRepository {
   class LogErrorRepositoryStub implements LogErrorRepository {
@@ -16,15 +44,8 @@ function makeLogErrorRepository(): LogErrorRepository {
 
 function makeController(): Controller {
   class ControllerStub implements Controller {
-    async handle(httpRequest: any): Promise<HttpResponse> {
-      const httpResponse: HttpResponse = {
-        statusCode: 200,
-        body: {
-          name: 'valid_name',
-        },
-      };
-
-      return new Promise(resolve => resolve(httpResponse));
+    async handle(_httpRequest: any): Promise<HttpResponse> {
+      return new Promise(resolve => resolve(ok(makeFakeAccount())));
     }
   }
 
@@ -50,66 +71,42 @@ function makeSut(): SutTypes {
 
 describe('LogController Decorator', () => {
   it('should call controller handle with correct values', async () => {
+    // Arrange
     const { sut, controllerStub } = makeSut();
     const handleSpy = jest.spyOn(controllerStub, 'handle');
 
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-      },
-    };
+    // Act
+    await sut.handle(makeFakeRequest());
 
-    await sut.handle(httpRequest);
-
-    expect(handleSpy).toHaveBeenCalledWith(httpRequest);
+    // Assert
+    expect(handleSpy).toHaveBeenCalledWith(makeFakeRequest());
   });
 
   it('should return the same result as the controller', async () => {
+    // Arrange
     const { sut } = makeSut();
 
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-      },
-    };
+    // Act
+    const result = await sut.handle(makeFakeRequest());
 
-    const result = await sut.handle(httpRequest);
-
-    expect(result).toEqual({
-      statusCode: 200,
-      body: {
-        name: 'valid_name',
-      },
-    });
+    // Assert
+    expect(result).toEqual(ok(makeFakeAccount()));
   });
 
   it('should call LogErrorRepository with correct error if controller returns a server error', async () => {
+    // Arrange
     const { sut, controllerStub, logErrorRepositoryStub } = makeSut();
-    const fakeError = new Error();
-    fakeError.stack = 'any_stack';
-    const error = serverError(fakeError);
     const logSpy = jest.spyOn(logErrorRepositoryStub, 'log');
     jest
       .spyOn(controllerStub, 'handle')
-      .mockReturnValueOnce(new Promise(resolve => resolve(error)));
+      .mockReturnValueOnce(
+        new Promise(resolve => resolve(makeFakeServerError())),
+      );
 
-    const httpRequest = {
-      body: {
-        name: 'any_name',
-        email: 'any_email@mail.com',
-        password: 'any_password',
-        passwordConfirmation: 'any_password',
-      },
-    };
+    // Act
+    await sut.handle(makeFakeRequest());
 
-    await sut.handle(httpRequest);
-
+    // Assert
     expect(logSpy).toHaveBeenCalledWith('any_stack');
   });
 });
