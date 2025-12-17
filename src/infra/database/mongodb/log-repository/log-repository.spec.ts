@@ -2,6 +2,17 @@ import { Collection } from 'mongodb';
 import { MongoHelper } from '../helpers/mongo-helper';
 import { LogMongoRepository } from './log-repository';
 
+type SutTypes = {
+  sut: LogMongoRepository;
+};
+
+function makeSut(): SutTypes {
+  const sut = new LogMongoRepository();
+  return {
+    sut,
+  };
+}
+
 describe('Log Mongo Repository', () => {
   let errorCollection: Collection;
   beforeAll(async () => {
@@ -19,7 +30,7 @@ describe('Log Mongo Repository', () => {
 
   it('should create an error log on success', async () => {
     // Arrange
-    const sut = new LogMongoRepository();
+    const { sut } = makeSut();
 
     // Act
     await sut.logError('any_error_stack');
