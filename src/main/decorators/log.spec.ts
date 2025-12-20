@@ -1,10 +1,10 @@
 import { LogErrorRepository } from '../../data/protocols/log-error-repository';
 import { AccountModel } from '../../domain/models/account';
-import { serverError } from '../../presentation/helper/http-helper';
+import { serverError } from '../../presentation/helpers/http-helper';
 import { Controller } from '../../presentation/protocols/controller';
 import { HttpRequest, HttpResponse } from '../../presentation/protocols/http';
 import { LogControllerDecorator } from './log';
-import { ok } from '../../presentation/helper/http-helper';
+import { ok } from '../../presentation/helpers/http-helper';
 
 function makeFakeServerError(): HttpResponse {
   const fakeError = new Error();

@@ -1,14 +1,14 @@
-import { Authentication } from '../../domain/usecases/authentication';
-import { InvalidParamError } from '../errors/invalid-param-error';
-import { MissingParamError } from '../errors/missing-param-error';
+import { Authentication } from '../../../domain/usecases/authentication';
+import { InvalidParamError } from '../../errors/invalid-param-error';
+import { MissingParamError } from '../../errors/missing-param-error';
 import {
   badRequest,
   ok,
   serverError,
   unauthorized,
-} from '../helper/http-helper';
-import { EmailValidator } from '../protocols/email-validator';
-import { HttpRequest } from '../protocols/http';
+} from '../../helpers/http-helper';
+import { EmailValidator } from '../../protocols/email-validator';
+import { HttpRequest } from '../../protocols/http';
 import { LoginController } from './login';
 
 function makeAuthentication() {
