@@ -7,7 +7,7 @@ import {
   AddAccountModel,
 } from '../../../domain/usecases/add-account';
 import { HttpRequest } from '../../protocols/http';
-import { ok, badRequest, serverError } from '../../helpers/http-helper';
+import { ok, badRequest, serverError } from '../../helpers/http/http-helper';
 import { Validation } from '../../helpers/validators/validation';
 
 function makeFakeRequest(): HttpRequest {
