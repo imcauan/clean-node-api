@@ -3,12 +3,14 @@ import {
   AuthenticationModel,
 } from '../../../domain/usecases/authentication';
 import { HashComparer } from '../../protocols/crypto/hash-comparer';
+import { TokenGenerator } from '../../protocols/crypto/token-generator';
 import { LoadAccountByEmailRepository } from '../../protocols/database/load-account-by-email-repository';
 
 export class DbAuthentication implements Authentication {
   constructor(
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashComparer: HashComparer,
+    private readonly tokenGenerator: TokenGenerator,
   ) {}
 
   async auth(authentication: AuthenticationModel): Promise<string> {
@@ -21,6 +23,7 @@ export class DbAuthentication implements Authentication {
         authentication.password,
         account.password,
       );
+      await this.tokenGenerator.generate(account.id);
     }
 
     return null;
