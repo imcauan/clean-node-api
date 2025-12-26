@@ -1,5 +1,6 @@
 import { AccountModel } from '../../../domain/models/account';
 import { AuthenticationModel } from '../../../domain/usecases/authentication';
+import { HashComparer } from '../../protocols/crypto/hash-comparer';
 import { LoadAccountByEmailRepository } from '../../protocols/database/load-account-by-email-repository';
 import { DbAuthentication } from './db-authentication';
 
@@ -8,8 +9,18 @@ function makeFakeAccount(): AccountModel {
     id: 'any_id',
     name: 'any_name',
     email: 'any_email@email.com',
-    password: 'any_password',
+    password: 'hashed_password',
   };
+}
+
+function makeHashComparer(): HashComparer {
+  class HashComparerStub implements HashComparer {
+    async compare(password: string, passwordHash: string): Promise<boolean> {
+      return true;
+    }
+  }
+
+  return new HashComparerStub();
 }
 
 function makeLoadAccountByEmailRepository(): LoadAccountByEmailRepository {
@@ -32,15 +43,21 @@ function makeFakeAuthentication(): AuthenticationModel {
 type SutTypes = {
   sut: DbAuthentication;
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository;
+  hashComparerStub: HashComparer;
 };
 
 function makeSut(): SutTypes {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository();
-  const sut = new DbAuthentication(loadAccountByEmailRepositoryStub);
+  const hashComparerStub = makeHashComparer();
+  const sut = new DbAuthentication(
+    loadAccountByEmailRepositoryStub,
+    hashComparerStub,
+  );
 
   return {
     sut,
     loadAccountByEmailRepositoryStub,
+    hashComparerStub,
   };
 }
 
@@ -83,5 +100,17 @@ describe('DBAuthentication UseCase', () => {
 
     // Assert
     expect(result).toBeNull();
+  });
+
+  it('should call HashComparer with correct values', async () => {
+    // Arrange
+    const { sut, hashComparerStub } = makeSut();
+    const hashSpy = jest.spyOn(hashComparerStub, 'compare');
+
+    // Act
+    await sut.auth(makeFakeAuthentication());
+
+    // Assert
+    expect(hashSpy).toHaveBeenCalledWith('any_password', 'hashed_password');
   });
 });
