@@ -1,6 +1,7 @@
 import { AccountModel } from '../../../domain/models/account';
 import { AuthenticationModel } from '../../../domain/usecases/authentication';
 import { HashComparer } from '../../protocols/crypto/hash-comparer';
+import { TokenGenerator } from '../../protocols/crypto/token-generator';
 import { LoadAccountByEmailRepository } from '../../protocols/database/load-account-by-email-repository';
 import { DbAuthentication } from './db-authentication';
 
@@ -21,6 +22,16 @@ function makeHashComparer(): HashComparer {
   }
 
   return new HashComparerStub();
+}
+
+function makeTokenGenerator(): TokenGenerator {
+  class TokenGeneratorStub implements TokenGenerator {
+    async generate(id: string): Promise<string> {
+      return 'any_token';
+    }
+  }
+
+  return new TokenGeneratorStub();
 }
 
 function makeLoadAccountByEmailRepository(): LoadAccountByEmailRepository {
@@ -44,20 +55,25 @@ type SutTypes = {
   sut: DbAuthentication;
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository;
   hashComparerStub: HashComparer;
+  tokenGeneratorStub: TokenGenerator;
 };
 
 function makeSut(): SutTypes {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository();
   const hashComparerStub = makeHashComparer();
+  const tokenGeneratorStub = makeTokenGenerator();
+
   const sut = new DbAuthentication(
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
+    tokenGeneratorStub,
   );
 
   return {
     sut,
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
+    tokenGeneratorStub,
   };
 }
 
@@ -140,5 +156,17 @@ describe('DBAuthentication UseCase', () => {
 
     // Assert
     expect(result).toBeNull();
+  });
+
+  it('should call TokenGenerator with correct id', async () => {
+    // Arrange
+    const { sut, tokenGeneratorStub } = makeSut();
+    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate');
+
+    // Act
+    await sut.auth(makeFakeAuthentication());
+
+    // Assert
+    expect(generateSpy).toHaveBeenCalledWith('any_id');
   });
 });
