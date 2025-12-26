@@ -70,4 +70,18 @@ describe('DBAuthentication UseCase', () => {
     // Assert
     expect(promise).rejects.toThrow();
   });
+
+  it('should return null if LoadAccountByEmailRepository returns null', async () => {
+    // Arrange
+    const { sut, loadAccountByEmailRepositoryStub } = makeSut();
+    jest
+      .spyOn(loadAccountByEmailRepositoryStub, 'load')
+      .mockReturnValueOnce(null);
+
+    // Act
+    const result = await sut.auth(makeFakeAuthentication());
+
+    // Assert
+    expect(result).toBeNull();
+  });
 });
