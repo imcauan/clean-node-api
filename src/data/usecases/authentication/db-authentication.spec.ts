@@ -183,4 +183,15 @@ describe('DBAuthentication UseCase', () => {
     // Assert
     expect(promise).rejects.toThrow();
   });
+
+  it('should return a token on success', async () => {
+    // Arrange
+    const { sut } = makeSut();
+
+    // Act
+    const result = await sut.auth(makeFakeAuthentication());
+
+    // Assert
+    expect(result).toBe('any_token');
+  });
 });
