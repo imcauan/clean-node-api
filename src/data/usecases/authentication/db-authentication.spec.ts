@@ -221,4 +221,18 @@ describe('DBAuthentication UseCase', () => {
     // Assert
     expect(hashSpy).toHaveBeenCalledWith('any_id', 'any_token');
   });
+
+  it('should throw if UpdateAccessTokenRepository throws', async () => {
+    // Arrange
+    const { sut, updateAccessTokenRepositoryStub } = makeSut();
+    jest
+      .spyOn(updateAccessTokenRepositoryStub, 'update')
+      .mockImplementationOnce(() => Promise.reject(new Error()));
+
+    // Act
+    const promise = sut.auth(makeFakeAuthentication());
+
+    // Assert
+    expect(promise).rejects.toThrow();
+  });
 });
