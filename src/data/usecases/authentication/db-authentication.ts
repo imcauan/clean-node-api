@@ -3,7 +3,7 @@ import {
   AuthenticationModel,
 } from '../../../domain/usecases/authentication';
 import { HashComparer } from '../../protocols/crypto/hash-comparer';
-import { TokenGenerator } from '../../protocols/crypto/token-generator';
+import { TokenEncrypter } from '../../protocols/crypto/token-encrypter';
 import { LoadAccountByEmailRepository } from '../../protocols/database/load-account-by-email-repository';
 import { UpdateAccessTokenRepository } from '../../protocols/database/update-access-token-repository';
 
@@ -11,7 +11,7 @@ export class DbAuthentication implements Authentication {
   constructor(
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashComparer: HashComparer,
-    private readonly tokenGenerator: TokenGenerator,
+    private readonly tokenEncrypter: TokenEncrypter,
     private readonly updateAccessTokenRepository: UpdateAccessTokenRepository,
   ) {}
 
@@ -33,7 +33,7 @@ export class DbAuthentication implements Authentication {
       return null;
     }
 
-    const accessToken = await this.tokenGenerator.generate(account.id);
+    const accessToken = await this.tokenEncrypter.encrypt(account.id);
     await this.updateAccessTokenRepository.update(account.id, accessToken);
 
     return accessToken;

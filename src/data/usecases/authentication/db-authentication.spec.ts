@@ -1,7 +1,7 @@
 import { AccountModel } from '../../../domain/models/account';
 import { AuthenticationModel } from '../../../domain/usecases/authentication';
 import { HashComparer } from '../../protocols/crypto/hash-comparer';
-import { TokenGenerator } from '../../protocols/crypto/token-generator';
+import { TokenEncrypter } from '../../protocols/crypto/token-encrypter';
 import { LoadAccountByEmailRepository } from '../../protocols/database/load-account-by-email-repository';
 import { UpdateAccessTokenRepository } from '../../protocols/database/update-access-token-repository';
 import { DbAuthentication } from './db-authentication';
@@ -25,14 +25,14 @@ function makeHashComparer(): HashComparer {
   return new HashComparerStub();
 }
 
-function makeTokenGenerator(): TokenGenerator {
-  class TokenGeneratorStub implements TokenGenerator {
-    async generate(id: string): Promise<string> {
+function makeTokenEncrypter(): TokenEncrypter {
+  class TokenEncrypterStub implements TokenEncrypter {
+    async encrypt(id: string): Promise<string> {
       return 'any_token';
     }
   }
 
-  return new TokenGeneratorStub();
+  return new TokenEncrypterStub();
 }
 
 function makeLoadAccountByEmailRepository(): LoadAccountByEmailRepository {
@@ -66,20 +66,20 @@ type SutTypes = {
   sut: DbAuthentication;
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository;
   hashComparerStub: HashComparer;
-  tokenGeneratorStub: TokenGenerator;
+  tokenEncrypterStub: TokenEncrypter;
   updateAccessTokenRepositoryStub: UpdateAccessTokenRepository;
 };
 
 function makeSut(): SutTypes {
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository();
   const hashComparerStub = makeHashComparer();
-  const tokenGeneratorStub = makeTokenGenerator();
+  const tokenEncrypterStub = makeTokenEncrypter();
   const updateAccessTokenRepositoryStub = makeUpdateAccessTokenRepository();
 
   const sut = new DbAuthentication(
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub,
+    tokenEncrypterStub,
     updateAccessTokenRepositoryStub,
   );
 
@@ -87,7 +87,7 @@ function makeSut(): SutTypes {
     sut,
     loadAccountByEmailRepositoryStub,
     hashComparerStub,
-    tokenGeneratorStub,
+    tokenEncrypterStub,
     updateAccessTokenRepositoryStub,
   };
 }
@@ -173,10 +173,10 @@ describe('DBAuthentication UseCase', () => {
     expect(result).toBeNull();
   });
 
-  it('should call TokenGenerator with correct id', async () => {
+  it('should call TokenEncrypter with correct id', async () => {
     // Arrange
-    const { sut, tokenGeneratorStub } = makeSut();
-    const generateSpy = jest.spyOn(tokenGeneratorStub, 'generate');
+    const { sut, tokenEncrypterStub } = makeSut();
+    const generateSpy = jest.spyOn(tokenEncrypterStub, 'encrypt');
 
     // Act
     await sut.auth(makeFakeAuthentication());
@@ -185,11 +185,11 @@ describe('DBAuthentication UseCase', () => {
     expect(generateSpy).toHaveBeenCalledWith('any_id');
   });
 
-  it('should throw if TokenGenerator throws', async () => {
+  it('should throw if TokenEncrypter throws', async () => {
     // Arrange
-    const { sut, tokenGeneratorStub } = makeSut();
+    const { sut, tokenEncrypterStub } = makeSut();
     jest
-      .spyOn(tokenGeneratorStub, 'generate')
+      .spyOn(tokenEncrypterStub, 'encrypt')
       .mockImplementationOnce(() => Promise.reject(new Error()));
 
     // Act
