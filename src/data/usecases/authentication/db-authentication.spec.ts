@@ -47,7 +47,7 @@ function makeLoadAccountByEmailRepository(): LoadAccountByEmailRepository {
 
 function makeUpdateAccessTokenRepository(): UpdateAccessTokenRepository {
   class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-    async update(id: string, token: string): Promise<void> {
+    async updateAccessToken(id: string, token: string): Promise<void> {
       return null;
     }
   }
@@ -213,7 +213,10 @@ describe('DBAuthentication UseCase', () => {
   it('should call UpdateAccessTokenRepository with correct values', async () => {
     // Arrange
     const { sut, updateAccessTokenRepositoryStub } = makeSut();
-    const hashSpy = jest.spyOn(updateAccessTokenRepositoryStub, 'update');
+    const hashSpy = jest.spyOn(
+      updateAccessTokenRepositoryStub,
+      'updateAccessToken',
+    );
 
     // Act
     await sut.auth(makeFakeAuthentication());
@@ -226,7 +229,7 @@ describe('DBAuthentication UseCase', () => {
     // Arrange
     const { sut, updateAccessTokenRepositoryStub } = makeSut();
     jest
-      .spyOn(updateAccessTokenRepositoryStub, 'update')
+      .spyOn(updateAccessTokenRepositoryStub, 'updateAccessToken')
       .mockImplementationOnce(() => Promise.reject(new Error()));
 
     // Act
