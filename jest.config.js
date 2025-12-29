@@ -3,9 +3,7 @@
  * https://jestjs.io/docs/configuration
  */
 
-import type { Config } from 'jest';
-
-const config: Config = {
+export default {
   roots: ['<rootDir>/src'],
   collectCoverageFrom: ['src/**/*.ts'],
   collectCoverage: true,
@@ -17,5 +15,3 @@ const config: Config = {
   },
   preset: '@shelf/jest-mongodb',
 };
-
-export default config;
