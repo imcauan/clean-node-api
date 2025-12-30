@@ -1,6 +1,6 @@
 import { Collection, MongoClient, ObjectId } from 'mongodb';
 
-type MongoHelperMapCollection<T> = T & { _id: ObjectId };
+export type MongoHelperMapCollection<T> = T & { _id: ObjectId };
 
 export const MongoHelper = {
   client: null as MongoClient | null,
