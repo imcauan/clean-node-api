@@ -11,7 +11,7 @@ import {
 } from '../../helpers/http/http-helper';
 import { Validation } from '../../protocols/validation';
 import { HttpRequest } from '../../protocols/http';
-import { LoginController } from './login';
+import { LoginController } from './login-controller';
 
 function makeValidation(): Validation {
   class ValidationStub implements Validation {

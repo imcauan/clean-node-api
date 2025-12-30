@@ -1,9 +1,9 @@
-import { LogErrorRepository } from '../../data/protocols/database/log-error-repository';
+import { LogErrorRepository } from '../../data/protocols/database/log/log-error-repository';
 import { AccountModel } from '../../domain/models/account';
 import { serverError } from '../../presentation/helpers/http/http-helper';
 import { Controller } from '../../presentation/protocols/controller';
 import { HttpRequest, HttpResponse } from '../../presentation/protocols/http';
-import { LogControllerDecorator } from './log';
+import { LogControllerDecorator } from './log-controller-decorator';
 import { ok } from '../../presentation/helpers/http/http-helper';
 
 function makeFakeServerError(): HttpResponse {
