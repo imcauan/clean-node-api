@@ -1,4 +1,7 @@
 {
+  "explorer.fileNesting.patterns": {
+    "package.json": "eslint*, .prettier*, tsconfig*, package-lock*, .gitignore, .lint*, commitlint.*, .editorconfig, knip.*, jest*",
+  },
   "github.copilot.enable": {
     "*": false,
     "plaintext": false,
