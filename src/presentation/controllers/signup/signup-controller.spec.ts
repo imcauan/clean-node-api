@@ -9,6 +9,10 @@ import {
 import { HttpRequest } from '../../protocols/http';
 import { ok, badRequest, serverError } from '../../helpers/http/http-helper';
 import { Validation } from '../../protocols/validation';
+import {
+  Authentication,
+  AuthenticationModel,
+} from '../../../domain/usecases/authentication';
 
 function makeFakeRequest(): HttpRequest {
   return {
@@ -32,12 +36,21 @@ function makeFakeAccount(): AccountModel {
 
 function makeValidation(): Validation {
   class ValidationStub implements Validation {
-    validate(input: any): Error {
+    validate(input: any): Error | null {
       return null;
     }
   }
 
   return new ValidationStub();
+}
+
+function makeAuthentication() {
+  class AuthenticationStub implements Authentication {
+    async auth(authentication: AuthenticationModel): Promise<string> {
+      return 'any_token';
+    }
+  }
+  return new AuthenticationStub();
 }
 
 function makeAddAccount(): AddAccount {
@@ -54,18 +67,25 @@ type SutTypes = {
   sut: SignUpController;
   addAccountStub: AddAccount;
   validationStub: Validation;
+  authenticationStub: Authentication;
 };
 
 function makeSut(): SutTypes {
   const addAccountStub = makeAddAccount();
   const validationStub = makeValidation();
+  const authenticationStub = makeAuthentication();
 
-  const sut = new SignUpController(addAccountStub, validationStub);
+  const sut = new SignUpController(
+    addAccountStub,
+    validationStub,
+    authenticationStub,
+  );
 
   return {
     sut,
     addAccountStub,
     validationStub,
+    authenticationStub,
   };
 }
 
@@ -139,5 +159,20 @@ describe('SignUp Controller', () => {
     expect(httpResponse).toEqual(
       badRequest(new MissingParamError('any_field')),
     );
+  });
+
+  it('should call authentication with correct values', async () => {
+    // Arrange
+    const { sut, authenticationStub } = makeSut();
+    const authSpy = jest.spyOn(authenticationStub, 'auth');
+
+    // Act
+    await sut.handle(makeFakeRequest());
+
+    // Assert
+    expect(authSpy).toHaveBeenCalledWith({
+      email: 'any_email@mail.com',
+      password: 'any_password',
+    });
   });
 });
