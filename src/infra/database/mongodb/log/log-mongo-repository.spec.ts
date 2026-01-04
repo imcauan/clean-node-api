@@ -1,6 +1,5 @@
 import { Collection } from 'mongodb';
-import { MongoHelper } from '../helpers/mongo-helper';
-import { LogMongoRepository } from './log-mongo-repository';
+import { MongoHelper, LogMongoRepository } from '@/infra/database';
 
 type SutTypes = {
   sut: LogMongoRepository;

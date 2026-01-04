@@ -1,6 +1,6 @@
-import { LogMongoRepository } from '../../../infra/database/mongodb/log/log-mongo-repository';
-import { Controller } from '../../../presentation/protocols/controller';
-import { LogControllerDecorator } from '../../decorators/log-controller-decorator';
+import { LogMongoRepository } from '@/infra';
+import { Controller } from '@/presentation';
+import { LogControllerDecorator } from '@/main';
 
 export function makeLogControllerDecorator(
   controller: Controller,

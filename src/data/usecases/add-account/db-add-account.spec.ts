@@ -1,9 +1,11 @@
-import { AccountModel } from '../../../domain/models/account';
-import { AddAccountModel } from '../../../domain/usecases/add-account';
-import { AddAccountRepository } from '../../protocols/database/account/add-account-repository';
-import { Hasher } from '../../protocols/crypto/hasher';
-import { DbAddAccount } from './db-add-account';
-import { LoadAccountByEmailRepository } from '../../protocols/database/account/load-account-by-email-repository';
+import { AccountModel } from '@/domain/models';
+import { AddAccountModel } from '@/domain/usecases';
+import {
+  AddAccountRepository,
+  Hasher,
+  LoadAccountByEmailRepository,
+} from '@/data/protocols';
+import { DbAddAccount } from '@/data/usecases';
 
 function makeHasher(): Hasher {
   class HasherStub implements Hasher {

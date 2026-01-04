@@ -13,5 +13,9 @@ export default {
   transform: {
     '^.+\\.ts$': 'ts-jest',
   },
+  moduleNameMapper: {
+    '^@/(.*)$': '<rootDir>/src/$1',
+  },
   preset: '@shelf/jest-mongodb',
+  moduleDirectories: ['node_modules', '<rootDir>'],
 };
