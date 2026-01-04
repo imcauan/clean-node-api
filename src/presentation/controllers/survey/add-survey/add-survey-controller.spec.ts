@@ -1,4 +1,4 @@
-import { HttpRequest, AddSurveyController } from '@/presentation';
+import { HttpRequest, AddSurveyController, badRequest } from '@/presentation';
 import { Validation } from '@/validation';
 
 function makeValidationStub(): Validation {
@@ -52,5 +52,17 @@ describe('AddSurvey Controller', () => {
 
     // Assert
     expect(validationSpy).toHaveBeenCalledWith(httpRequest.body);
+  });
+
+  it('should return 400 if Validation fails', async () => {
+    // Arrange
+    const { sut, validationStub } = makeSut();
+    jest.spyOn(validationStub, 'validate').mockReturnValueOnce(new Error());
+
+    // Act
+    const result = await sut.handle(makeHttpRequest());
+
+    // Assert
+    expect(result).toEqual(badRequest(new Error()));
   });
 });
