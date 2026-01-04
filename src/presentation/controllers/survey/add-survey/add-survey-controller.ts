@@ -4,6 +4,7 @@ import {
   Controller,
   HttpRequest,
   HttpResponse,
+  noContent,
   serverError,
 } from '@/presentation';
 import { Validation } from '@/validation';
@@ -28,7 +29,7 @@ export class AddSurveyController implements Controller {
         answers,
       });
 
-      return Promise.resolve(null);
+      return noContent();
     } catch (error) {
       return serverError(error);
     }
