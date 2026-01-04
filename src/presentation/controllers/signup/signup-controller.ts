@@ -7,7 +7,7 @@ import {
 } from '../../helpers/http/http-helper';
 import { Controller } from '../../protocols/controller';
 import { AddAccount } from '../../../domain/usecases/add-account';
-import { Validation } from '../../protocols/validation';
+import { Validation } from '../../../validation/protocols/validation';
 import { Authentication } from '../../../domain/usecases/authentication';
 import { EmailInUseError } from '../../errors/email-in-use-error';
 

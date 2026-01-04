@@ -5,7 +5,7 @@ import {
   serverError,
   unauthorized,
 } from '../../helpers/http/http-helper';
-import { Validation } from '../../protocols/validation';
+import { Validation } from '../../../validation/protocols/validation';
 import { Controller } from '../../protocols/controller';
 import { HttpRequest, HttpResponse } from '../../protocols/http';
 
