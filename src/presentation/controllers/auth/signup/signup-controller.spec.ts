@@ -1,24 +1,22 @@
-import { SignUpController } from './signup-controller';
-import { MissingParamError } from '../../errors/missing-param-error';
-import { ServerError } from '../../errors/server-error';
-import { EmailInUseError } from '../../errors/email-in-use-error';
-import { AccountModel } from '../../../domain/models/account';
 import {
-  AddAccount,
-  AddAccountModel,
-} from '../../../domain/usecases/add-account';
-import { HttpRequest } from '../../protocols/http';
-import {
+  MissingParamError,
+  ServerError,
+  EmailInUseError,
+  HttpRequest,
   ok,
   badRequest,
   serverError,
   forbidden,
-} from '../../helpers/http/http-helper';
-import { Validation } from '../../../validation/protocols/validation';
+  SignUpController,
+} from '@/presentation';
 import {
+  AccountModel,
+  AddAccount,
+  AddAccountModel,
   Authentication,
   AuthenticationModel,
-} from '../../../domain/usecases/authentication';
+} from '@/domain';
+import { Validation } from '@/validation';
 
 function makeFakeRequest(): HttpRequest {
   return {

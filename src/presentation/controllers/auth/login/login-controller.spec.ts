@@ -1,17 +1,14 @@
+import { Authentication, AuthenticationModel } from '@/domain';
 import {
-  Authentication,
-  AuthenticationModel,
-} from '../../../domain/usecases/authentication';
-import { MissingParamError } from '../../errors/missing-param-error';
-import {
+  MissingParamError,
   badRequest,
   ok,
   serverError,
   unauthorized,
-} from '../../helpers/http/http-helper';
-import { Validation } from '../../../validation/protocols/validation';
-import { HttpRequest } from '../../protocols/http';
-import { LoginController } from './login-controller';
+  HttpRequest,
+  LoginController,
+} from '@/presentation';
+import { Validation } from '@/validation';
 
 function makeValidation(): Validation {
   class ValidationStub implements Validation {
