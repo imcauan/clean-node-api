@@ -1,6 +1,5 @@
-import { DbAddAccount } from '../../../../data/usecases/add-account/db-add-account';
-import { BcryptAdapter } from '../../../../infra/crypto/bcrypt-adapter';
-import { AccountMongoRepository } from '../../../../infra/database/mongodb/account/account-mongo-repository';
+import { DbAddAccount } from '@/data';
+import { BcryptAdapter, AccountMongoRepository } from '@/infra';
 
 export function makeDbAddAccount(): DbAddAccount {
   const salt = 12;

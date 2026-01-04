@@ -1,9 +1,11 @@
-import { CompareFieldsValidation } from '../../../../validation/validators/compare-fields-validation';
-import { EmailValidation } from '../../../../validation/validators/email-validation';
-import { RequiredFieldValidation } from '../../../../validation/validators/required-field-validation';
-import { Validation } from '../../../../validation/protocols/validation';
-import { ValidationComposite } from '../../../../validation/validators/validation-composite';
-import { EmailValidatorAdapter } from '../../../../infra/validators/email-validator-adapter';
+import { EmailValidatorAdapter } from '@/infra';
+import {
+  CompareFieldsValidation,
+  EmailValidation,
+  RequiredFieldValidation,
+  Validation,
+  ValidationComposite,
+} from '@/validation';
 
 export function makeSignUpValidation(): ValidationComposite {
   const validations: Validation[] = [];

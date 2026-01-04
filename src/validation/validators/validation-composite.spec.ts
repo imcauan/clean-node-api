@@ -1,6 +1,5 @@
-import { MissingParamError } from '../../presentation/errors/missing-param-error';
-import { Validation } from '../../validation/protocols/validation';
-import { ValidationComposite } from './validation-composite';
+import { MissingParamError } from '@/presentation';
+import { Validation, ValidationComposite } from '@/validation';
 
 function makeValidation(): Validation {
   class ValidationStub implements Validation {
