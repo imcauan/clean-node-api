@@ -25,13 +25,27 @@ function makeHttpRequest(): HttpRequest {
   };
 }
 
+type SutTypes = {
+  validationStub: Validation;
+  sut: AddSurveyController;
+};
+
+function makeSut(): SutTypes {
+  const validationStub = makeValidationStub();
+  const sut = new AddSurveyController(validationStub);
+
+  return {
+    sut,
+    validationStub,
+  };
+}
+
 describe('AddSurvey Controller', () => {
   it('should call Validation with correct values', async () => {
     // Arrange
-    const validationStub = makeValidationStub();
+    const { sut, validationStub } = makeSut();
     const validationSpy = jest.spyOn(validationStub, 'validate');
     const httpRequest = makeHttpRequest();
-    const sut = new AddSurveyController(validationStub);
 
     // Act
     await sut.handle(httpRequest);
