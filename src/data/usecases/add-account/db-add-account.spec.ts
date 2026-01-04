@@ -54,37 +54,37 @@ function makeAddAccountRepository(): AddAccountRepository {
 
 type SutTypes = {
   sut: DbAddAccount;
-  HasherStub: Hasher;
+  hasherStub: Hasher;
   addAccountRepositoryStub: AddAccountRepository;
   loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository;
 };
 
 function makeSut(): SutTypes {
-  const HasherStub = makeHasher();
+  const hasherStub = makeHasher();
   const addAccountRepositoryStub = makeAddAccountRepository();
   const loadAccountByEmailRepositoryStub = makeLoadAccountByEmailRepository();
   const sut = new DbAddAccount(
-    HasherStub,
+    hasherStub,
     addAccountRepositoryStub,
     loadAccountByEmailRepositoryStub,
   );
 
   return {
     sut,
-    HasherStub,
+    hasherStub,
     addAccountRepositoryStub,
     loadAccountByEmailRepositoryStub,
   };
 }
 
 describe('DbAddAccount UseCase', () => {
-  it('should call Hasher with correct password', () => {
+  it('should call Hasher with correct password', async () => {
     // Arrange
-    const { sut, HasherStub } = makeSut();
-    const hashSpy = jest.spyOn(HasherStub, 'hash');
+    const { sut, hasherStub } = makeSut();
+    const hashSpy = jest.spyOn(hasherStub, 'hash');
 
     // Act
-    sut.add(makeFakeAccountData());
+    await sut.add(makeFakeAccountData());
 
     // Assert
     expect(hashSpy).toHaveBeenCalledWith('valid_password');
@@ -92,9 +92,9 @@ describe('DbAddAccount UseCase', () => {
 
   it('should throw if Hasher throws', async () => {
     // Arrange
-    const { sut, HasherStub } = makeSut();
+    const { sut, hasherStub } = makeSut();
     jest
-      .spyOn(HasherStub, 'hash')
+      .spyOn(hasherStub, 'hash')
       .mockReturnValueOnce(
         new Promise((_resolve, reject) => reject(new Error())),
       );

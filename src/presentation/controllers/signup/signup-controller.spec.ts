@@ -14,7 +14,7 @@ import {
   serverError,
   forbidden,
 } from '../../helpers/http/http-helper';
-import { Validation } from '../../protocols/validation';
+import { Validation } from '../../../validation/protocols/validation';
 import {
   Authentication,
   AuthenticationModel,

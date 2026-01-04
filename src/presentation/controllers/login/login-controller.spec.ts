@@ -9,7 +9,7 @@ import {
   serverError,
   unauthorized,
 } from '../../helpers/http/http-helper';
-import { Validation } from '../../protocols/validation';
+import { Validation } from '../../../validation/protocols/validation';
 import { HttpRequest } from '../../protocols/http';
 import { LoginController } from './login-controller';
 
