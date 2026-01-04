@@ -1,5 +1,10 @@
 import { AddSurvey, AddSurveyModel } from '@/domain';
-import { HttpRequest, AddSurveyController, badRequest } from '@/presentation';
+import {
+  HttpRequest,
+  AddSurveyController,
+  badRequest,
+  serverError,
+} from '@/presentation';
 import { Validation } from '@/validation';
 
 function makeAddSurvey(): AddSurvey {
@@ -91,5 +96,20 @@ describe('AddSurvey Controller', () => {
 
     // Assert
     expect(addSpy).toHaveBeenCalledWith(httpRequest.body);
+  });
+
+  it('should return 500 if AddSurvey throws', async () => {
+    // Arrange
+    const { sut, addSurveyStub } = makeSut();
+    jest
+      .spyOn(addSurveyStub, 'add')
+      .mockReturnValueOnce(Promise.reject(new Error()));
+    const httpRequest = makeHttpRequest();
+
+    // Act
+    const result = await sut.handle(httpRequest);
+
+    // Assert
+    expect(result).toEqual(serverError(new Error()));
   });
 });
