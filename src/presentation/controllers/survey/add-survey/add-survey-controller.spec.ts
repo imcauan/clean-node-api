@@ -4,6 +4,7 @@ import {
   AddSurveyController,
   badRequest,
   serverError,
+  noContent,
 } from '@/presentation';
 import { Validation } from '@/validation';
 
@@ -111,5 +112,16 @@ describe('AddSurvey Controller', () => {
 
     // Assert
     expect(result).toEqual(serverError(new Error()));
+  });
+
+  it('should return 204 on success', async () => {
+    // Arrange
+    const { sut } = makeSut();
+
+    // Act
+    const result = await sut.handle(makeHttpRequest());
+
+    // Assert
+    expect(result).toEqual(noContent());
   });
 });
