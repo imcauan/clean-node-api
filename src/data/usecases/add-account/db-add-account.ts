@@ -9,7 +9,7 @@ import { LoadAccountByEmailRepository } from '../../protocols/database/account/l
 
 export class DbAddAccount implements AddAccount {
   constructor(
-    private readonly Hasher: Hasher,
+    private readonly hasher: Hasher,
     private readonly addAccountRepository: AddAccountRepository,
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
   ) {}
@@ -20,7 +20,7 @@ export class DbAddAccount implements AddAccount {
     );
 
     if (!account) {
-      const hashedPassword = await this.Hasher.hash(accountData.password);
+      const hashedPassword = await this.hasher.hash(accountData.password);
       const newAccount = await this.addAccountRepository.add({
         ...accountData,
         password: hashedPassword,
