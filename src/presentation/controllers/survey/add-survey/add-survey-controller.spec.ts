@@ -1,5 +1,16 @@
+import { AddSurvey, AddSurveyModel } from '@/domain';
 import { HttpRequest, AddSurveyController, badRequest } from '@/presentation';
 import { Validation } from '@/validation';
+
+function makeAddSurvey(): AddSurvey {
+  class AddSurveyStub implements AddSurvey {
+    async add(data: AddSurveyModel): Promise<void> {
+      return null;
+    }
+  }
+
+  return new AddSurveyStub();
+}
 
 function makeValidationStub(): Validation {
   class ValidationStub implements Validation {
@@ -28,15 +39,18 @@ function makeHttpRequest(): HttpRequest {
 type SutTypes = {
   validationStub: Validation;
   sut: AddSurveyController;
+  addSurveyStub: AddSurvey;
 };
 
 function makeSut(): SutTypes {
   const validationStub = makeValidationStub();
-  const sut = new AddSurveyController(validationStub);
+  const addSurveyStub = makeAddSurvey();
+  const sut = new AddSurveyController(validationStub, addSurveyStub);
 
   return {
     sut,
     validationStub,
+    addSurveyStub,
   };
 }
 
@@ -64,5 +78,18 @@ describe('AddSurvey Controller', () => {
 
     // Assert
     expect(result).toEqual(badRequest(new Error()));
+  });
+
+  it('should call AddSurvey with correct values', async () => {
+    // Arrange
+    const { sut, addSurveyStub } = makeSut();
+    const addSpy = jest.spyOn(addSurveyStub, 'add');
+    const httpRequest = makeHttpRequest();
+
+    // Act
+    await sut.handle(httpRequest);
+
+    // Assert
+    expect(addSpy).toHaveBeenCalledWith(httpRequest.body);
   });
 });
