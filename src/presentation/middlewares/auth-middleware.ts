@@ -5,6 +5,7 @@ import {
   HttpRequest,
   HttpResponse,
   Middleware,
+  ok,
 } from '@/presentation';
 
 export class AuthMiddleware implements Middleware {
@@ -17,6 +18,10 @@ export class AuthMiddleware implements Middleware {
       return forbidden(new AccessDeniedError());
     }
 
-    await this.loadAccountByToken.load(accessToken);
+    const account = await this.loadAccountByToken.load(accessToken);
+
+    return ok({
+      accountId: account.id,
+    });
   }
 }
