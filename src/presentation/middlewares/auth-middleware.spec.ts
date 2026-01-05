@@ -4,6 +4,7 @@ import {
   forbidden,
   AuthMiddleware,
   HttpRequest,
+  ok,
 } from '@/presentation';
 
 function makeFakeRequest(): HttpRequest {
@@ -82,5 +83,16 @@ describe('Auth Middleware', () => {
 
     // Assert
     expect(result).toEqual(forbidden(new AccessDeniedError()));
+  });
+
+  it('should return 200 if LoadAccountByToken returns an account', async () => {
+    // Arrange
+    const { sut } = makeSut();
+
+    // Act
+    const result = await sut.handle(makeFakeRequest());
+
+    // Assert
+    expect(result).toEqual(ok({ accountId: 'any_id' }));
   });
 });
