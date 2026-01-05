@@ -10,7 +10,7 @@ function makeFakeAccountData(): AccountModel {
   };
 }
 
-function makeLoadAccountByToken() {
+function makeLoadAccountByToken(): LoadAccountByToken {
   class LoadAccountByTokenStub implements LoadAccountByToken {
     async load(accessToken: string, role?: string): Promise<AccountModel> {
       return makeFakeAccountData();
