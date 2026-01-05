@@ -5,6 +5,7 @@ import {
   AuthMiddleware,
   HttpRequest,
   ok,
+  serverError,
 } from '@/presentation';
 
 function makeFakeRequest(): HttpRequest {
@@ -94,5 +95,19 @@ describe('Auth Middleware', () => {
 
     // Assert
     expect(result).toEqual(ok({ accountId: 'any_id' }));
+  });
+
+  it('should return 500 if LoadAccountByToken throws', async () => {
+    // Arrange
+    const { sut, loadAccountByTokenStub } = makeSut();
+    jest
+      .spyOn(loadAccountByTokenStub, 'load')
+      .mockReturnValue(Promise.reject(new Error()));
+
+    // Act
+    const result = await sut.handle(makeFakeRequest());
+
+    // Assert
+    expect(result).toEqual(serverError(new Error()));
   });
 });
