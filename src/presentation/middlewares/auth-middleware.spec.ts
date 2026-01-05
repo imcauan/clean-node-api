@@ -20,11 +20,25 @@ function makeLoadAccountByToken() {
   return new LoadAccountByTokenStub();
 }
 
+type SutTypes = {
+  loadAccountByTokenStub: LoadAccountByToken;
+  sut: AuthMiddleware;
+};
+
+function makeSut(): SutTypes {
+  const loadAccountByTokenStub = makeLoadAccountByToken();
+  const sut = new AuthMiddleware(loadAccountByTokenStub);
+
+  return {
+    loadAccountByTokenStub,
+    sut,
+  };
+}
+
 describe('Auth Middleware', () => {
   it('should return 403 if authorization does not exist in headers', async () => {
     // Arrange
-    const loadAccountByTokenStub = makeLoadAccountByToken();
-    const sut = new AuthMiddleware(loadAccountByTokenStub);
+    const { sut } = makeSut();
 
     // Act
     const result = await sut.handle({});
@@ -35,9 +49,8 @@ describe('Auth Middleware', () => {
 
   it('should call LoadAccountByToken with correct accessToken', async () => {
     // Arrange
-    const loadAccountByTokenStub = makeLoadAccountByToken();
+    const { sut, loadAccountByTokenStub } = makeSut();
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load');
-    const sut = new AuthMiddleware(loadAccountByTokenStub);
 
     // Act
     await sut.handle({
