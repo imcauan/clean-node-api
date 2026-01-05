@@ -1,5 +1,18 @@
 import { AccountModel, LoadAccountByToken } from '@/domain';
-import { AccessDeniedError, forbidden, AuthMiddleware } from '@/presentation';
+import {
+  AccessDeniedError,
+  forbidden,
+  AuthMiddleware,
+  HttpRequest,
+} from '@/presentation';
+
+function makeFakeRequest(): HttpRequest {
+  return {
+    headers: {
+      authorization: 'any_token',
+    },
+  };
+}
 
 function makeFakeAccountData(): AccountModel {
   return {
@@ -53,11 +66,7 @@ describe('Auth Middleware', () => {
     const loadSpy = jest.spyOn(loadAccountByTokenStub, 'load');
 
     // Act
-    await sut.handle({
-      headers: {
-        authorization: 'any_token',
-      },
-    });
+    await sut.handle(makeFakeRequest());
 
     // Assert
     expect(loadSpy).toHaveBeenCalledWith('any_token');
