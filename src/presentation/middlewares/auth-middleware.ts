@@ -10,7 +10,10 @@ import {
 } from '@/presentation';
 
 export class AuthMiddleware implements Middleware {
-  constructor(private readonly loadAccountByToken: LoadAccountByToken) {}
+  constructor(
+    private readonly loadAccountByToken: LoadAccountByToken,
+    private readonly role: string,
+  ) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
     try {
@@ -20,7 +23,10 @@ export class AuthMiddleware implements Middleware {
         return forbidden(new AccessDeniedError());
       }
 
-      const account = await this.loadAccountByToken.load(accessToken);
+      const account = await this.loadAccountByToken.load(
+        accessToken,
+        this.role,
+      );
 
       return ok({
         accountId: account.id,
