@@ -6,22 +6,27 @@ import {
   HttpResponse,
   Middleware,
   ok,
+  serverError,
 } from '@/presentation';
 
 export class AuthMiddleware implements Middleware {
   constructor(private readonly loadAccountByToken: LoadAccountByToken) {}
 
   async handle(httpRequest: HttpRequest): Promise<HttpResponse> {
-    const accessToken = httpRequest.headers?.['authorization'];
+    try {
+      const accessToken = httpRequest.headers?.['authorization'];
 
-    if (!accessToken) {
-      return forbidden(new AccessDeniedError());
+      if (!accessToken) {
+        return forbidden(new AccessDeniedError());
+      }
+
+      const account = await this.loadAccountByToken.load(accessToken);
+
+      return ok({
+        accountId: account.id,
+      });
+    } catch (error) {
+      return serverError(error);
     }
-
-    const account = await this.loadAccountByToken.load(accessToken);
-
-    return ok({
-      accountId: account.id,
-    });
   }
 }
