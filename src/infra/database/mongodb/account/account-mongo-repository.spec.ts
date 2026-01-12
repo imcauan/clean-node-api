@@ -21,74 +21,80 @@ describe('Account Mongo Repository', () => {
     await MongoHelper.disconnect();
   });
 
-  it('should return an account on add success', async () => {
-    // Arrange
-    const sut = makeSut();
+  describe('add', () => {
+    it('should return an account on add success', async () => {
+      // Arrange
+      const sut = makeSut();
 
-    // Act
-    const account = await sut.add({
-      name: 'any_name',
-      email: 'any_email@email.com',
-      password: 'any_password',
+      // Act
+      const account = await sut.add({
+        name: 'any_name',
+        email: 'any_email@email.com',
+        password: 'any_password',
+      });
+
+      // Assert
+      expect(account).toBeTruthy();
+      expect(account.id).toBeTruthy();
+      expect(account.name).toBe('any_name');
+      expect(account.email).toBe('any_email@email.com');
+      expect(account.password).toBe('any_password');
     });
-
-    // Assert
-    expect(account).toBeTruthy();
-    expect(account.id).toBeTruthy();
-    expect(account.name).toBe('any_name');
-    expect(account.email).toBe('any_email@email.com');
-    expect(account.password).toBe('any_password');
   });
 
-  it('should return an account on loadByEmail success', async () => {
-    // Arrange
-    const sut = makeSut();
-    await accountCollection.insertOne({
-      name: 'any_name',
-      email: 'any_email@email.com',
-      password: 'any_password',
+  describe('loadByEmail', () => {
+    it('should return an account on loadByEmail success', async () => {
+      // Arrange
+      const sut = makeSut();
+      await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email@email.com',
+        password: 'any_password',
+      });
+
+      // Act
+      const account = await sut.loadByEmail('any_email@email.com');
+
+      // Assert
+      expect(account).toBeTruthy();
+      expect(account.id).toBeTruthy();
+      expect(account.name).toBe('any_name');
+      expect(account.email).toBe('any_email@email.com');
+      expect(account.password).toBe('any_password');
     });
 
-    // Act
-    const account = await sut.loadByEmail('any_email@email.com');
+    it('should return null if loadByEmail fails', async () => {
+      // Arrange
+      const sut = makeSut();
 
-    // Assert
-    expect(account).toBeTruthy();
-    expect(account.id).toBeTruthy();
-    expect(account.name).toBe('any_name');
-    expect(account.email).toBe('any_email@email.com');
-    expect(account.password).toBe('any_password');
+      // Act
+      const account = await sut.loadByEmail('any_email@email.com');
+
+      // Assert
+      expect(account).toBeFalsy();
+    });
   });
 
-  it('should return null if loadByEmail fails', async () => {
-    // Arrange
-    const sut = makeSut();
+  describe('updateAccessToken', () => {
+    it('should update the account accessToken on updateAccessToken success', async () => {
+      // Arrange
+      const sut = makeSut();
+      const result = await accountCollection.insertOne({
+        name: 'any_name',
+        email: 'any_email@email.com',
+        password: 'any_password',
+      });
 
-    // Act
-    const account = await sut.loadByEmail('any_email@email.com');
+      // Act
+      await sut.updateAccessToken(result.insertedId.toHexString(), 'any_token');
 
-    // Assert
-    expect(account).toBeFalsy();
-  });
+      const account = await accountCollection.findOne({
+        _id: result.insertedId,
+      });
 
-  it('should update the account accessToken on updateAccessToken success', async () => {
-    // Arrange
-    const sut = makeSut();
-    const result = await accountCollection.insertOne({
-      name: 'any_name',
-      email: 'any_email@email.com',
-      password: 'any_password',
+      // Assert
+      expect(account).toBeTruthy();
+      expect(account.accessToken).toBe('any_token');
     });
-
-    // Act
-    await sut.updateAccessToken(result.insertedId.toHexString(), 'any_token');
-
-    const account = await accountCollection.findOne({
-      _id: result.insertedId,
-    });
-
-    // Assert
-    expect(account).toBeTruthy();
-    expect(account.accessToken).toBe('any_token');
   });
 });

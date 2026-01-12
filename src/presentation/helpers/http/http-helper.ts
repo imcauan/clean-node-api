@@ -28,6 +28,13 @@ export function ok<T>(data: T): HttpResponse {
   };
 }
 
+export function noContent(): HttpResponse {
+  return {
+    statusCode: 204,
+    body: null,
+  };
+}
+
 export function unauthorized(): HttpResponse {
   return {
     statusCode: 401,
